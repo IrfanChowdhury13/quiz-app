@@ -14,6 +14,34 @@ function login() {
   }
 }
 
+
+// script.js
+const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSsXVxMsZkX8xzIO6FJCobw40a8nTzIMgSRDhPVpjRgIbs0n1muRnCP283eP5pCQLko_fF0KA0CX4k/pub?gid=0&single=true&output=csv";
+
+async function fetchQuiz() {
+    const response = await fetch(sheetUrl);
+    const csvData = await response.text();
+
+    const lines = csvData.split("\n");
+    const headers = lines[0].split(",");
+    const quizArray = lines.slice(1).map(line => {
+        const data = line.split(",");
+        let obj = {};
+        headers.forEach((header, i) => {
+            obj[header.trim()] = data[i].trim();
+        });
+        return obj;
+    });
+
+    return quizArray;
+}
+
+// Example: load quiz when page loads
+fetchQuiz().then(quiz => {
+    console.log(quiz);
+    startQuiz(quiz); // তোমার quiz logic function
+});
+
 // Add question to localStorage (as JSON for simplicity)
 function addQuestion(){
   let question = document.getElementById("q").value;

@@ -3,7 +3,7 @@ const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSsXVxMsZkX8x
 let quizData = [];
 let currentQuestion = 0;
 let timer;
-let timeLeft = 30; // 30 seconds
+let timeLeft = 30;
 let answered = false;
 
 // Fetch CSV and convert to JSON
@@ -51,27 +51,37 @@ function showQuestion() {
     startTimer();
 }
 
-// Check answer and show feedback inline
+// Check answer and show feedback inline next to correct option
 function checkAnswer(button, correct) {
     if (answered) return;
     answered = true;
     clearInterval(timer);
 
     const feedback = document.getElementById("answer-feedback");
+
+    // Disable all buttons
+    const allButtons = Array.from(document.getElementById("options").children);
+    allButtons.forEach(b => b.disabled = true);
+
+    // Highlight correct option
+    allButtons.forEach(b => {
+        if (b.innerText === correct) {
+            b.style.backgroundColor = "#28a745"; // green
+            // Append "Correct!" text next to option
+            b.innerHTML = `${b.innerText} ✅ Correct!`;
+        } else if (b === button) {
+            // If user clicked wrong, mark red
+            b.style.backgroundColor = "#dc3545";
+        }
+    });
+
+    // Feedback text below question
     if (button.innerText === correct) {
-        feedback.innerText = "Correct!";
-        feedback.style.color = "#28a745";
+        feedback.innerText = "";
     } else {
-        feedback.innerText = `Wrong! Correct answer: ${correct}`;
+        feedback.innerText = `Wrong! Correct answer is highlighted.`;
         feedback.style.color = "#dc3545";
     }
-
-    // Highlight answers
-    Array.from(document.getElementById("options").children).forEach(b => {
-        b.disabled = true;
-        if (b.innerText === correct) b.style.backgroundColor = "#28a745";
-        else b.style.backgroundColor = "#dc3545";
-    });
 
     // Auto next question after 3 seconds
     setTimeout(() => {
@@ -93,12 +103,16 @@ function startTimer() {
             if (!answered) {
                 answered = true;
                 const feedback = document.getElementById("answer-feedback");
-                feedback.innerText = `Time's up! Correct answer: ${quizData[currentQuestion].answer}`;
-                feedback.style.color = "#dc3545";
+                feedback.innerText = `Time's up! Correct answer is highlighted.`;
 
                 // Disable all buttons
-                Array.from(document.getElementById("options").children).forEach(b => {
+                const allButtons = Array.from(document.getElementById("options").children);
+                allButtons.forEach(b => {
                     b.disabled = true;
+                    if (b.innerText === quizData[currentQuestion].answer) {
+                        b.style.backgroundColor = "#28a745";
+                        b.innerHTML = `${b.innerText} ✅ Correct!`;
+                    }
                 });
 
                 // Auto next question after 3 seconds

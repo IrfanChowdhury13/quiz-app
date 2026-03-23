@@ -30,6 +30,8 @@ h2 {
     margin-bottom: 15px;
 }
 
+
+
 .options-grid button {
     padding: 15px;
     border: none;
@@ -57,4 +59,12 @@ h2 {
 #timer {
     font-weight: bold;
     margin-bottom: 15px;
+}
+
+#quiz-wrapper h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #007BFF;
+    margin-bottom: 20px;
+    text-align: center;
 }

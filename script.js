@@ -1,10 +1,9 @@
-// Google Sheet CSV link
 const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSsXVxMsZkX8xzIO6FJCobw40a8nTzIMgSRDhPVpjRgIbs0n1muRnCP283eP5pCQLko_fF0KA0CX4k/pub?gid=0&single=true&output=csv";
 
 let quizData = [];
 let currentQuestion = 0;
 let timer;
-let timeLeft = 60; // 60 seconds per question
+let timeLeft = 60;
 
 // Fetch CSV and convert to JSON
 async function fetchQuiz() {
@@ -37,21 +36,30 @@ function showQuestion() {
 
     const optionsDiv = document.getElementById("options");
     optionsDiv.innerHTML = "";
+    document.getElementById("answer-feedback").innerText = "";
+
     for (let i = 1; i <= 4; i++) {
         const btn = document.createElement("button");
         btn.innerText = q["option" + i];
-        btn.onclick = () => checkAnswer(q["option" + i], q.answer);
+        btn.onclick = () => checkAnswer(btn, q.answer);
         optionsDiv.appendChild(btn);
     }
 
     startTimer();
 }
 
-// Check answer
-function checkAnswer(selected, correct) {
+// Check answer and show feedback inline
+function checkAnswer(button, correct) {
     clearInterval(timer);
-    if (selected === correct) alert("Correct!");
-    else alert("Wrong! Correct answer: " + correct);
+
+    const feedback = document.getElementById("answer-feedback");
+    if (button.innerText === correct) {
+        feedback.innerText = "Correct!";
+        feedback.style.color = "#28a745";
+    } else {
+        feedback.innerText = `Wrong! Correct answer: ${correct}`;
+        feedback.style.color = "#dc3545"; // red
+    }
 }
 
 // Start timer
@@ -65,8 +73,8 @@ function startTimer() {
         document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
         if (timeLeft <= 0) {
             clearInterval(timer);
-            alert("Time's up! Moving to next question.");
-            nextQuestion();
+            document.getElementById("answer-feedback").innerText = `Time's up! Correct answer: ${quizData[currentQuestion].answer}`;
+            document.getElementById("answer-feedback").style.color = "#dc3545";
         }
     }, 1000);
 }
@@ -78,5 +86,5 @@ function nextQuestion() {
     showQuestion();
 }
 
-// Start the quiz
+// Start quiz
 fetchQuiz();

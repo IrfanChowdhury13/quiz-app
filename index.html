@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quiz App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Islamic Quiz App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="quiz-container">
     <h2 id="question"></h2>
-    <div id="options"></div>
+    <div id="options" class="options-grid"></div>
+    <p id="answer-feedback"></p>
     <p id="timer"></p>
-    <button id="next-btn" onclick="nextQuestion()">Next</button>
+    <button id="next-btn" onclick="nextQuestion()">Next Question</button>
   </div>
 
   <script src="script.js"></script>

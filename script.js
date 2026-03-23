@@ -51,7 +51,7 @@ function showQuestion() {
     startTimer();
 }
 
-// Check answer and show feedback inline next to correct option
+// Check answer and highlight
 function checkAnswer(button, correct) {
     if (answered) return;
     answered = true;
@@ -59,23 +59,19 @@ function checkAnswer(button, correct) {
 
     const feedback = document.getElementById("answer-feedback");
 
-    // Disable all buttons
     const allButtons = Array.from(document.getElementById("options").children);
-    allButtons.forEach(b => b.disabled = true);
+    allButtons.forEach(b => b.disabled = true); // disable all
 
-    // Highlight correct option
+    // Highlight
     allButtons.forEach(b => {
         if (b.innerText === correct) {
             b.style.backgroundColor = "#28a745"; // green
-            // Append "Correct!" text next to option
-            b.innerHTML = `${b.innerText} ✅ Correct!`;
         } else if (b === button) {
-            // If user clicked wrong, mark red
-            b.style.backgroundColor = "#dc3545";
+            b.style.backgroundColor = "#dc3545"; // red for wrong
         }
     });
 
-    // Feedback text below question
+    // Feedback text below
     if (button.innerText === correct) {
         feedback.innerText = "";
     } else {
@@ -89,7 +85,7 @@ function checkAnswer(button, correct) {
     }, 3000);
 }
 
-// Start timer
+// Timer
 function startTimer() {
     clearInterval(timer);
     timeLeft = 30;
@@ -104,18 +100,17 @@ function startTimer() {
                 answered = true;
                 const feedback = document.getElementById("answer-feedback");
                 feedback.innerText = `Time's up! Correct answer is highlighted.`;
+                feedback.style.color = "#dc3545";
 
-                // Disable all buttons
                 const allButtons = Array.from(document.getElementById("options").children);
                 allButtons.forEach(b => {
                     b.disabled = true;
                     if (b.innerText === quizData[currentQuestion].answer) {
-                        b.style.backgroundColor = "#28a745";
-                        b.innerHTML = `${b.innerText} ✅ Correct!`;
+                        b.style.backgroundColor = "#28a745"; // highlight correct
                     }
                 });
 
-                // Auto next question after 3 seconds
+                // Auto next after 3s
                 setTimeout(() => {
                     nextQuestion();
                 }, 3000);
@@ -131,5 +126,5 @@ function nextQuestion() {
     showQuestion();
 }
 
-// Start quiz
+// Start
 fetchQuiz();

@@ -3,7 +3,8 @@ const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSsXVxMsZkX8x
 let quizData = [];
 let currentQuestion = 0;
 let timer;
-let timeLeft = 60;
+let timeLeft = 30; // 30 seconds
+let answered = false;
 
 // Fetch CSV and convert to JSON
 async function fetchQuiz() {
@@ -36,7 +37,9 @@ function showQuestion() {
 
     const optionsDiv = document.getElementById("options");
     optionsDiv.innerHTML = "";
-    document.getElementById("answer-feedback").innerText = "";
+    const feedback = document.getElementById("answer-feedback");
+    feedback.innerText = "";
+    answered = false;
 
     for (let i = 1; i <= 4; i++) {
         const btn = document.createElement("button");
@@ -50,6 +53,8 @@ function showQuestion() {
 
 // Check answer and show feedback inline
 function checkAnswer(button, correct) {
+    if (answered) return;
+    answered = true;
     clearInterval(timer);
 
     const feedback = document.getElementById("answer-feedback");
@@ -58,14 +63,26 @@ function checkAnswer(button, correct) {
         feedback.style.color = "#28a745";
     } else {
         feedback.innerText = `Wrong! Correct answer: ${correct}`;
-        feedback.style.color = "#dc3545"; // red
+        feedback.style.color = "#dc3545";
     }
+
+    // Highlight answers
+    Array.from(document.getElementById("options").children).forEach(b => {
+        b.disabled = true;
+        if (b.innerText === correct) b.style.backgroundColor = "#28a745";
+        else b.style.backgroundColor = "#dc3545";
+    });
+
+    // Auto next question after 3 seconds
+    setTimeout(() => {
+        nextQuestion();
+    }, 3000);
 }
 
 // Start timer
 function startTimer() {
     clearInterval(timer);
-    timeLeft = 60;
+    timeLeft = 30;
     document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
 
     timer = setInterval(() => {
@@ -73,8 +90,22 @@ function startTimer() {
         document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
         if (timeLeft <= 0) {
             clearInterval(timer);
-            document.getElementById("answer-feedback").innerText = `Time's up! Correct answer: ${quizData[currentQuestion].answer}`;
-            document.getElementById("answer-feedback").style.color = "#dc3545";
+            if (!answered) {
+                answered = true;
+                const feedback = document.getElementById("answer-feedback");
+                feedback.innerText = `Time's up! Correct answer: ${quizData[currentQuestion].answer}`;
+                feedback.style.color = "#dc3545";
+
+                // Disable all buttons
+                Array.from(document.getElementById("options").children).forEach(b => {
+                    b.disabled = true;
+                });
+
+                // Auto next question after 3 seconds
+                setTimeout(() => {
+                    nextQuestion();
+                }, 3000);
+            }
         }
     }, 1000);
 }

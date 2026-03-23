@@ -68,6 +68,14 @@ h2 {
     transition: background 0.3s;
 }
 
+#quiz-wrapper h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #007BFF;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
 #next-btn:hover {
     background-color: #1e7e34;
 }

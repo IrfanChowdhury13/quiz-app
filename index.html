@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="quiz-container">
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <h3 id="countdown">60</h3>
+    <h3 id="correctAnswer" style="color:green;"></h3>
+  </div>
+
+  <script>
+    let quiz = JSON.parse(localStorage.getItem("quiz")) || [];
+    let current = 0;
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const countdownEl = document.getElementById("countdown");
+    const correctEl = document.getElementById("correctAnswer");
+
+    function showQuestion(){
+      if(current >= quiz.length) return;
+      let q = quiz[current];
+      questionEl.innerText = q.question;
+      optionsEl.innerHTML = "";
+      correctEl.innerText = "";
+      q.options.forEach((opt)=>{
+        let btn = document.createElement("button");
+        btn.innerText = opt;
+        optionsEl.appendChild(btn);
+      });
+      startCountdown(60);
+    }
+
+    function startCountdown(seconds){
+      countdownEl.innerText = seconds;
+      let timer = setInterval(()=>{
+        seconds--;
+        countdownEl.innerText = seconds;
+        if(seconds <= 0){
+          clearInterval(timer);
+          correctEl.innerText = "Correct Answer Is: " + quiz[current].answer;
+          current++;
+          setTimeout(showQuestion, 5000); // 5 sec pause
+        }
+      },1000);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
